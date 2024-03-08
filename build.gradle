@@ -27,14 +27,6 @@ project(':acmeair-services') {
     }
 }
 
-project(':acmeair-services-wxs') {
-    dependencies {
-        compile project(':acmeair-common')
-        compile project(':acmeair-services')
-        compile 'com.ibm.websphere.objectgrid:objectgrid:8.6.0.2'
-    }
-}
-
 
 
 project(':acmeair-services-morphia') {
@@ -81,13 +73,6 @@ project(':acmeair-webapp') {
            compile ('org.mongodb.morphia:morphia:0.110')  {
               transitive = false
            }
-        }
-
-        if ("$includeService".equalsIgnoreCase("wxs") || "$includeService".equalsIgnoreCase("ALL")) {
-           println "Including WXS service "
-
-           compile project(':acmeair-services-wxs')
-           providedRuntime 'com.ibm.websphere.objectgrid:objectgrid:8.6.0.2'
         }
 
         providedRuntime 'javax:javaee-web-api:7.0'
