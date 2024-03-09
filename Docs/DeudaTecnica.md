@@ -1,12 +1,3 @@
-# Bitacora refactor calidad de software proyecto Acme Air :rocket:
-
-El objetivo de este documento es llevar un registro en forma de bitacora
-de las recomendaciones y tareas ejecutadas para llevar a cabo un proceso
-de refactor y mejora de calidad de software a un proyecto legacy
-conocido como AcmeAir, dicho proyecto consiste en la implementacion
-de una aerolinea llamada "Acme Air" junto con sus servicios basicos.
-Al final de este proceso se detallaran los aprendizajes aprendidos en este proyecto.
-
 ## Observaciones de deuda técnica y refactor :chart_with_upwards_trend:
 
 Se realizo un analisis del proyecto con el objetivo de identificar
@@ -43,5 +34,3 @@ Dando como resultado una serie de recomendaciones las cuales se enuncian a conti
 
 ### Pruebas :test_tube:
 - [ ] No hay pruebas unitarias que prueben las funcionalidades clave del proyecto
-
-## Lecciones aprendidas :monocle_face:
