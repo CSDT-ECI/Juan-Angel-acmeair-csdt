@@ -15,8 +15,14 @@
 *******************************************************************************/
 package com.acmeair.service;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class KeyGenerator {
-	
+
+	public KeyGenerator() {
+	}
+
 	public Object generate() {
 		return java.util.UUID.randomUUID().toString();
 	}

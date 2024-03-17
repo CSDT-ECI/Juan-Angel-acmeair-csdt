@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 import com.acmeair.entities.AirportCodeMapping;
 import com.acmeair.entities.Flight;
@@ -30,6 +29,8 @@ import com.acmeair.morphia.MorphiaConstants;
 import com.acmeair.morphia.entities.AirportCodeMappingImpl;
 import com.acmeair.morphia.entities.FlightImpl;
 import com.acmeair.morphia.entities.FlightSegmentImpl;
+import com.acmeair.morphia.repository.FlightRepository;
+import com.acmeair.morphia.repository.FlightSegmentRepository;
 import com.acmeair.morphia.services.util.MongoConnectionManager;
 import com.acmeair.service.DataService;
 import com.acmeair.service.FlightService;
@@ -37,35 +38,63 @@ import com.acmeair.service.KeyGenerator;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
+import org.omg.CORBA.PRIVATE_MEMBER;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
+@Primary
+@Service
 @DataService(name=MorphiaConstants.KEY,description=MorphiaConstants.KEY_DESCRIPTION)
 public class FlightServiceImpl extends FlightService implements  MorphiaConstants {
 
 	//private final static Logger logger = Logger.getLogger(FlightService.class.getName()); 
-		
-	Datastore datastore;
-	
-	@Inject
-	KeyGenerator keyGenerator;
-	
 
-	
+	Datastore datastore;
+
+	@Autowired
+	private FlightRepository flightRepository;
+
+	@Autowired
+	private FlightSegmentRepository flightSegmentRepository;
+
+
+	@Autowired
+	KeyGenerator keyGenerator;
+
+	public FlightServiceImpl() {
+	}
+
+	public FlightServiceImpl(FlightRepository flightRepository, FlightSegmentRepository flightSegmentRepository, KeyGenerator keyGenerator) {
+		this.flightRepository = flightRepository;
+		this.flightSegmentRepository = flightSegmentRepository;
+		this.keyGenerator = keyGenerator;
+	}
+
+	public FlightRepository getFlightRepository() {
+		return flightRepository;
+	}
+
+	public void setFlightRepository(FlightRepository flightRepository) {
+		this.flightRepository = flightRepository;
+	}
+
 	@PostConstruct
-	public void initialization() {	
+	public void initialization() {
 		datastore = MongoConnectionManager.getConnectionManager().getDatastore();
 	}
-	
-	
+
+
 	@Override
 	public Long countFlights() {
 		return datastore.find(FlightImpl.class).countAll();
 	}
-	
+
 	@Override
 	public Long countFlightSegments() {
 		return datastore.find(FlightSegmentImpl.class).countAll();
 	}
-	
+
 	@Override
 	public Long countAirports() {
 		return datastore.find(AirportCodeMappingImpl.class).countAll();
@@ -89,34 +118,31 @@ public class FlightServiceImpl extends FlightService implements  MorphiaConstant
 		}
 	}
 	*/
-	
-	protected Flight getFlight(String flightId, String segmentId) {
-		Query<FlightImpl> q = datastore.find(FlightImpl.class).field("_id").equal(flightId);
-		return q.get();
+
+	public Flight getFlight(String flightId, String segmentId) {
+		return flightRepository.getFlightById(flightId);
 	}
 
 	@Override
 	protected  FlightSegment getFlightSegment(String fromAirport, String toAirport){
-		Query<FlightSegmentImpl> q = datastore.find(FlightSegmentImpl.class).field("originPort").equal(fromAirport).field("destPort").equal(toAirport);
-		FlightSegment segment = q.get();
+		FlightSegment segment = flightSegmentRepository.getFlightSegment(fromAirport, toAirport);
 		if (segment == null) {
 			segment = new FlightSegmentImpl(); // put a sentinel value of a non-populated flightsegment 
 		}
 		return segment;
 	}
-	
+
 	@Override
 	protected  List<Flight> getFlightBySegment(FlightSegment segment, Date deptDate){
-		Query<FlightImpl> q2;
+		List<FlightImpl> flightImpls;
 		if(deptDate != null) {
-			q2 = datastore.find(FlightImpl.class).disableValidation().field("flightSegmentId").equal(segment.getFlightName()).field("scheduledDepartureTime").equal(deptDate);
+			flightImpls = flightRepository.getFlightBySegmentAndDeptDate(segment, deptDate);
 		} else {
-			q2 = datastore.find(FlightImpl.class).disableValidation().field("flightSegmentId").equal(segment.getFlightName());
+			flightImpls = flightRepository.getFlightBySegment(segment);
 		}
-		List<FlightImpl> flightImpls = q2.asList();
 		List<Flight> flights;
 		if (flightImpls != null) {
-			flights =  new ArrayList<Flight>(); 
+			flights =  new ArrayList<Flight>();
 			for (Flight flight : flightImpls) {
 				flight.setFlightSegment(segment);
 				flights.add(flight);
@@ -127,23 +153,24 @@ public class FlightServiceImpl extends FlightService implements  MorphiaConstant
 		}
 		return flights;
 	}
-	
+
 
 	@Override
 	public void storeAirportMapping(AirportCodeMapping mapping) {
 		try{
-			datastore.save(mapping);
+			flightRepository.storeAirportCodeMapping(mapping);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 	}
 
-	@Override 
+	@Override
 	public AirportCodeMapping createAirportCodeMapping(String airportCode, String airportName){
 		AirportCodeMapping acm = new AirportCodeMappingImpl(airportCode, airportName);
 		return acm;
 	}
-	
+
+	//TODO: Refactor params into object input
 	@Override
 	public Flight createNewFlight(String flightSegmentId,
 			Date scheduledDepartureTime, Date scheduledArrivalTime,
@@ -157,7 +184,7 @@ public class FlightServiceImpl extends FlightService implements  MorphiaConstant
 			numFirstClassSeats, numEconomyClassSeats,
 			airplaneTypeId);
 		try{
-			datastore.save(flight);
+			flightRepository.storeFlight(flight);
 			return flight;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
