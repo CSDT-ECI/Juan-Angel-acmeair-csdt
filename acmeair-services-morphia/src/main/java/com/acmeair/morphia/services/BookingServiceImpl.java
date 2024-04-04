@@ -7,6 +7,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 
+import com.acmeair.morphia.repository.BookingRepository;
 import org.mongodb.morphia.Datastore;
 
 import com.acmeair.entities.Booking;
@@ -23,39 +24,58 @@ import com.acmeair.service.KeyGenerator;
 import com.acmeair.service.ServiceLocator;
 
 import org.mongodb.morphia.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-
-
+@Service
 @DataService(name=MorphiaConstants.KEY,description=MorphiaConstants.KEY_DESCRIPTION)
 public class BookingServiceImpl implements BookingService, MorphiaConstants {
 
 	//private final static Logger logger = Logger.getLogger(BookingService.class.getName()); 
 
-		
 	Datastore datastore;
+
+	@Autowired
+	BookingRepository bookingRepository;
 	
 	@Inject 
 	KeyGenerator keyGenerator;
 	
-	private FlightService flightService = ServiceLocator.instance().getService(FlightService.class);
-	private CustomerService customerService = ServiceLocator.instance().getService(CustomerService.class);
+	@Autowired
+	private FlightService flightService;
 
+	@Autowired
+	private CustomerService customerService;
+
+	public BookingServiceImpl(BookingRepository bookingRepository,
+							  FlightService flightService,
+							  CustomerService customerService,
+							  KeyGenerator keyGenerator)
+	{
+		this.bookingRepository = bookingRepository;
+		this.flightService = flightService;
+		this.customerService = customerService;
+		this.keyGenerator = keyGenerator;
+	}
+
+	public BookingServiceImpl() {
+	}
 
 	@PostConstruct
 	public void initialization() {	
 		datastore = MongoConnectionManager.getConnectionManager().getDatastore();	
 	}	
-	
-	
-	
+
+
 	public String bookFlight(String customerId, String flightId) {
 		try{
-			Flight f = flightService.getFlightByFlightId(flightId, null);
-			Customer c = customerService.getCustomerByUsername(customerId);
+			Flight flight = flightService.getFlightByFlightId(flightId, null);
+			Customer customer = customerService.getCustomerByUsername(customerId);
+			String key = keyGenerator.generate().toString();
 			
-			Booking newBooking = new BookingImpl(keyGenerator.generate().toString(), new Date(), c, f);
+			Booking newBooking = new BookingImpl(key, new Date(), customer, flight);
+			bookingRepository.saveBooking(newBooking);
 
-			datastore.save(newBooking);
 			return newBooking.getBookingId();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -70,10 +90,7 @@ public class BookingServiceImpl implements BookingService, MorphiaConstants {
 	@Override
 	public Booking getBooking(String user, String bookingId) {
 		try{
-			Query<BookingImpl> q = datastore.find(BookingImpl.class).field("_id").equal(bookingId);
-			Booking booking = q.get();
-			
-			return booking;
+			return bookingRepository.getBookingById(bookingId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -82,13 +99,8 @@ public class BookingServiceImpl implements BookingService, MorphiaConstants {
 	@Override
 	public List<Booking> getBookingsByUser(String user) {
 		try{
-			Query<BookingImpl> q = datastore.find(BookingImpl.class).disableValidation().field("customerId").equal(user);
-			List<BookingImpl> bookingImpls = q.asList();
-			List<Booking> bookings = new ArrayList<Booking>();
-			for(Booking b: bookingImpls){
-				bookings.add(b);
-			}
-			return bookings;
+			List<BookingImpl> bookingImpls = bookingRepository.getBookingsByUser(user);
+            return new ArrayList<Booking>(bookingImpls);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -97,7 +109,7 @@ public class BookingServiceImpl implements BookingService, MorphiaConstants {
 	@Override
 	public void cancelBooking(String user, String bookingId) {
 		try{
-			datastore.delete(BookingImpl.class, bookingId);
+			bookingRepository.deleteBooking(bookingId);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -106,6 +118,6 @@ public class BookingServiceImpl implements BookingService, MorphiaConstants {
 	
 	@Override
 	public Long count() {
-		return datastore.find(BookingImpl.class).countAll();
+		return bookingRepository.countAll();
 	}	
 }
