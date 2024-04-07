@@ -55,6 +55,9 @@ una mayor confianza en la calidad del software y tener una retroalimentación al
 * Frecuencia de despliegues, de esta forma se puede medir la eficiencia del equipo en la implementación y entrega de nuevas
   funcionalidades que generen valor al cliente, logrando identificar la productividad de un equipo y tener un feedback constante frente a los cambios.
 
+* Cantidad de despliegues fallidos, esto con el fin de medir la calidad de los despliegues y la eficiencia del equipo en la
+  implementación de nuevas funcionalidades, permitiendo tener una retroalimentación constante y mejorar la calidad del software.
+
 * Tiempo de onboarding y carga cognitiva, esto con el fin de medir la facilidad de adaptación de nuevos desarrolladores al proyecto
   y la facilidad de comprensión del código, permitiendo tener una mayor eficiencia en la integración de nuevos miembros al equipo.
 
