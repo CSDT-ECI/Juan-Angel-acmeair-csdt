@@ -37,8 +37,6 @@ import com.acmeair.service.FlightService;
 import com.acmeair.service.KeyGenerator;
 
 import org.mongodb.morphia.Datastore;
-import org.mongodb.morphia.query.Query;
-import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
@@ -99,25 +97,7 @@ public class FlightServiceImpl extends FlightService implements  MorphiaConstant
 	public Long countAirports() {
 		return datastore.find(AirportCodeMappingImpl.class).countAll();
 	}
-	
-	/*
-	@Override
-	public Flight getFlightByFlightId(String flightId, String flightSegmentId) {
-		try {
-			Flight flight = flightPKtoFlightCache.get(flightId);
-			if (flight == null) {
-				Query<FlightImpl> q = datastore.find(FlightImpl.class).field("_id").equal(flightId);
-				flight = q.get();
-				if (flightId != null && flight != null) {
-					flightPKtoFlightCache.putIfAbsent(flight, flight);
-				}
-			}
-			return flight;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	*/
+
 
 	public Flight getFlight(String flightId, String segmentId) {
 		return flightRepository.getFlightById(flightId);
@@ -194,7 +174,7 @@ public class FlightServiceImpl extends FlightService implements  MorphiaConstant
 	@Override
 	public void storeFlightSegment(FlightSegment flightSeg) {
 		try{
-			datastore.save(flightSeg);
+			flightSegmentRepository.saveFlightSegment(flightSeg);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
