@@ -19,9 +19,10 @@ import com.acmeair.service.CustomerService;
 
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.query.Query;
+import org.springframework.stereotype.Service;
 
 
-
+@Service
 @DataService(name=MorphiaConstants.KEY,description=MorphiaConstants.KEY_DESCRIPTION)
 public class CustomerServiceImpl extends CustomerService implements MorphiaConstants {	
 		

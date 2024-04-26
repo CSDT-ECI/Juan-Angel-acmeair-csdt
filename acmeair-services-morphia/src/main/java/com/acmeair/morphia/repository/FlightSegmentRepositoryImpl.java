@@ -20,4 +20,9 @@ public class FlightSegmentRepositoryImpl implements FlightSegmentRepository{
         Query<FlightSegmentImpl> q = datastore.find(FlightSegmentImpl.class).field("originPort").equal(fromAirport).field("destPort").equal(toAirport);
         return q.get();
     }
+
+    @Override
+    public void saveFlightSegment(FlightSegment flightSegment) {
+        datastore.save(flightSegment);
+    }
 }
