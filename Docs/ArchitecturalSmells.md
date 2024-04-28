@@ -15,5 +15,9 @@ que se han venido haciendo en términos de arquitectura, con el fin de reducir e
 refactors que incluyen el desacoplamiento de la lógica de persistencia de los servicios al crear repositorios junto con
 una inyección de dependencias usando Spring lo que permite abstraer dicha lógica de inyección.
 
+En la siguiente imagen se puede obervar las recomendaciones dadas por Designite para el modulo `Fl
+ightServiceImpl`:
+![arq.png](img%2Farq.png)
+
 Sin embargo se puede seguir mejorando la arquitectura del proyecto, por ejemplo se podrían aplicar prácticas de DDD para
 tener un código más organizado y que sea guiado por el dominio del negocio, lo que mejora la mantenibilidad y evolución del proyecto.
