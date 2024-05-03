@@ -1,0 +1,19 @@
+theme: jekyll-theme-minimal
+title: ACME AIR Project -> Técnicas de refactor y calidad de software aplicadas a AcmeAir
+description: CSDT 2024-1 Juan Camilo Angel
+show_downloads: True
+navigation:
+  - title: Home
+    url: readmes/CSDT-2024
+  - title: Code Smells and Refactor
+    url: readmes/DeudaTecnica
+  - title: Clean Code
+    url: readmes/CleanCode
+  - title: Testing Debt
+    url: readmes/Testing
+  - title: Quality Analysis
+    url: readmes/QualityAnalysis
+  - title: Github Actions
+    url: readmes/Worflows
+  - title: DevEx - Space - Copilot
+    url: readmes/HerramientasIA
