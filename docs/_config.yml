@@ -4,7 +4,7 @@ description: CSDT 2024-1 Juan Camilo Angel
 show_downloads: True
 navigation:
   - title: Home
-    url: readmes/CSDT-2024
+    url: readmes/CSDT2024
   - title: Code Smells and Refactor
     url: readmes/DeudaTecnica
   - title: Clean Code
