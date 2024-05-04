@@ -10,7 +10,7 @@ seguridad, fiabilidad, rendimiento, etc.
 
 En la siguiente imagen se puede observar el resultado de análisis.
 
-![sonar.png](img%2Fsonar.png)
+![sonar.png](..%2Fimg%2Fsonar.png)
 
 Aquí se puede observar una gran cantidad de issues relacionados en gran
 parte a la mantenibilidad del código debido a una presencia alta de code

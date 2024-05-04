@@ -82,7 +82,7 @@ donde se puede ver que es capaz de dar una buena sugerencia a pesar de algunos e
 o parámetros.
 
 
-![copilot.png](img%2Fcopilot.png)
+![copilot.png](..%2Fimg%2Fcopilot.png)
 
 En conclusión es evidente el aporte que herramientas como estas
 pueden dar a los desarrolladores para mejorar su productividad en

@@ -42,9 +42,8 @@ Una vez configurado el archivo de Github Actions, se procede a crear un pull req
 En la siguientes imagenes se puede ver el pipeline en accion donde se realiza la compilación y ejecución de las pruebas unitarias del proyecto,
 garantizando de esta forma que el código que se sube a la rama master cumpla con los estándares de calidad definidos.
 
-
-![pipeline1.png](img%2Fpipeline1.png)
-![pipeline.png](img%2Fpipeline.png)
+![pipeline.png](..%2Fimg%2Fpipeline.png)
+![pipeline1.png](..%2Fimg%2Fpipeline1.png)
 
 Adicionalmente dicho workflow se puede complementar con un analisis de calidad de código, para esto se puede utilizar herramientas como SonarCloud,
 sin embargo para este proyecto no se realizó dicha configuración ya que el proyecto al estar dentro de la organización no tiene accesos a la configuración de SonarCloud
